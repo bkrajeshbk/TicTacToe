@@ -1,4 +1,4 @@
-from unittest import TestCase, mock
+from unittest import TestCase, mock, result
 from unittest.case import expectedFailure
 from models.players import Player
 from tictactoe import TicTacToe
@@ -6,24 +6,27 @@ from models.constants import Outputs, Exceptions
 from models.players import Player
 
 class TestTicTacToe(TestCase):
+
     def test_show_rules(self):
         for _ in range(6):
             game = TicTacToe()
             result = game.show_rules()
             self.assertEqual(result, Outputs.RULES_DISPLAYED.value)
 
-    @mock.patch('models.players.Player.get_player_name')
     @mock.patch('models.players.Player.get_player_symbol')
     @mock.patch('models.players.Player.get_player_name')
-    def test_get_players_details_errors(self, p1_names, p1_symbols, p2_names):
-        sample_p1_names = [Outputs.VALID_NAME.value, Outputs.VALID_NAME.value, Outputs.VALID_NAME.value, Outputs.VALID_NAME.value, Outputs.VALID_NAME.value]
-        sample_p1_symbols = [Outputs.VALID_SYMBOL.value, Outputs.VALID_SYMBOL.value, Outputs.VALID_SYMBOL.value, Outputs.VALID_SYMBOL.value, Outputs.VALID_SYMBOL.value]
+    def test_get_players_details_errors(self, p1_names, p1_symbols):
+        sample_p1_names = ["asd"]#, "qwe", "@#$", "Computer"]
+        sample_p2_names = ["ad"]
+        sample_p1_symbols = ["X"]
+        sample_p2_symbols = ["O"]
         for index in range(len(sample_p1_names)):
-            p1_names.return_value = sample_p1_names[index]
-            p1_symbols.return_value = sample_p1_symbols[index]
-            p2_names.return_value = sample_p1_names[index]
             game = TicTacToe()
+            game.player1, game.player2 = Player(), Player()
+            game.player1.name, game.player1.symbol = sample_p1_names[index], sample_p1_symbols[index]
+            game.player2.name, game.player2.symbol = sample_p2_names[index], sample_p2_symbols[index]
             result = game.get_players_details()
+            print("Player Details Result : ", result)
             self.assertEqual(result, Exceptions.INVALID_INPUT.value)
     
     @mock.patch('builtins.input') 
